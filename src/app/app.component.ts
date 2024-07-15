@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import { WorkoutFormComponent } from './workout-form/workout-form.component';
 import { WorkoutListComponent } from './workout-list/workout-list.component';
 
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

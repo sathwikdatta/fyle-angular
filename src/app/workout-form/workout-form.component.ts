@@ -1,5 +1,3 @@
-// src/app/workout-form/workout-form.component.ts
-
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -7,6 +5,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { UserService } from '../user.service';
+
+interface Workout {
+  name: string;
+  type: string;
+  minutes: number;
+}
 
 @Component({
   selector: 'app-workout-form',
@@ -18,26 +22,29 @@ import { UserService } from '../user.service';
 export class WorkoutFormComponent {
   workoutForm: FormGroup;
   workoutTypes: string[] = ['Running', 'Cycling', 'Swimming', 'Yoga'];
+  submissionMessage: string = '';
 
   constructor(private fb: FormBuilder, private userService: UserService) {
     this.workoutForm = this.fb.group({
-      name: ['', Validators.required], // Ensure the name field is not empty
-      type: ['', Validators.required], // Ensure the type field is selected
-      minutes: ['', [Validators.required, Validators.min(1)]] // Ensure minutes is greater than 0
+      name: ['', Validators.required],
+      type: ['', Validators.required],
+      minutes: ['', [Validators.required, Validators.min(1)]]
     });
   }
 
   addWorkout(): void {
     if (this.workoutForm.valid) {
-      const workoutData = this.workoutForm.value;
-      this.userService.addUserWorkout(workoutData); // Call the service to add workout data
+      const workoutData: Workout = this.workoutForm.value;
+      this.userService.addUserWorkout(workoutData);
       this.workoutForm.reset();
-      this.workoutForm.markAsPristine(); // Mark the form as pristine to clear error states
+      this.workoutForm.markAsPristine();
       Object.keys(this.workoutForm.controls).forEach(key => {
         this.workoutForm.get(key)?.setErrors(null);
       });
+      this.submissionMessage = 'Workout added successfully!';
     } else {
-      this.workoutForm.markAllAsTouched(); // Mark all fields as touched to show validation errors
+      this.workoutForm.markAllAsTouched();
+      this.submissionMessage = 'Please fill out all required fields correctly.';
     }
   }
 }
